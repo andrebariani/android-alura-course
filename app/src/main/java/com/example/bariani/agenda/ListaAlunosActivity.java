@@ -1,8 +1,11 @@
 package com.example.bariani.agenda;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 public class ListaAlunosActivity extends AppCompatActivity {
@@ -17,5 +20,13 @@ public class ListaAlunosActivity extends AppCompatActivity {
         ListView listaAlunos = (ListView) findViewById(R.id.lista_alunos);
         listaAlunos.setAdapter(adapter);
 
+        Button novoAluno = (Button) findViewById(R.id.novo_aluno);
+        novoAluno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentVaiProForm = new Intent(ListaAlunosActivity.this, FormularioActivity.class);
+                startActivity(intentVaiProForm);
+            }
+        });
     }
 }
