@@ -1,2 +1,2 @@
 # android-alura-course
-Alura curso de git
+Alura curso de Android
