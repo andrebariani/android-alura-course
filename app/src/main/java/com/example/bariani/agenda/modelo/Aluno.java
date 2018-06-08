@@ -1,11 +1,23 @@
 package com.example.bariani.agenda.modelo;
 
-public class Aluno {
+import java.io.Serializable;
+
+// Serializable para transferencia, entre uma activity e outra, de dados binarios em um Pipe
+public class Aluno implements Serializable {
+    private Long id;
     private String nome;
     private String endereco;
     private String tel;
     private String site;
     private Double nota;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
@@ -45,5 +57,10 @@ public class Aluno {
 
     public void setNota(Double nota) {
         this.nota = nota;
+    }
+
+    @Override
+    public String toString() {
+        return getId() + " - " + getNome();
     }
 }

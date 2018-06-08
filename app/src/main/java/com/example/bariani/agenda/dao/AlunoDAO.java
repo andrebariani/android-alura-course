@@ -2,10 +2,15 @@ package com.example.bariani.agenda.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 import com.example.bariani.agenda.modelo.Aluno;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AlunoDAO extends SQLiteOpenHelper {
 
@@ -15,7 +20,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE Alunos (id INTEGER PRIMARY, nome TEXT NOT NULL, endereco TEXT, tel TEXT, site TEXT, nota REAL);";
+        String sql = "CREATE TABLE Alunos (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, tel TEXT, site TEXT, nota REAL);";
         db.execSQL(sql);
     }
 
@@ -30,13 +35,63 @@ public class AlunoDAO extends SQLiteOpenHelper {
     public void insere(Aluno aluno) {
         SQLiteDatabase db = getWritableDatabase();
 
+        ContentValues dados = getContentValuesAluno(aluno);
+
+        db.insert("Alunos", null, dados);
+    }
+
+    @NonNull
+    private ContentValues getContentValuesAluno(Aluno aluno) {
         ContentValues dados = new ContentValues();
         dados.put("nome", aluno.getNome());
         dados.put("endereco", aluno.getEndereco());
         dados.put("tel", aluno.getTel());
         dados.put("site", aluno.getSite());
         dados.put("nota", aluno.getNota());
+        return dados;
+    }
 
-        db.insert("Alunos", null, dados);
+    public List<Aluno> buscaAlunos() {
+        String sql = "SELECT * FROM Alunos";
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.rawQuery(sql, null);
+
+        List<Aluno> alunos = new ArrayList<Aluno>();
+
+        while(c.moveToNext()) {
+            Aluno aluno = new Aluno();
+
+            aluno.setId(c.getLong(c.getColumnIndex("id")));
+            aluno.setNome(c.getString(c.getColumnIndex("nome")));
+            aluno.setEndereco(c.getString(c.getColumnIndex("endereco")));
+            aluno.setTel(c.getString(c.getColumnIndex("tel")));
+            aluno.setSite(c.getString(c.getColumnIndex("site")));
+            aluno.setNota(c.getDouble(c.getColumnIndex("nota")));
+
+            alunos.add(aluno);
+        }
+
+        c.close();
+
+        return alunos;
+    }
+
+    public void deleta(Aluno aluno) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String[] params = {aluno.getId().toString()};
+        db.delete("Alunos", "id = ?", params);
+    }
+
+    public void altera(Aluno aluno) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues dados = getContentValuesAluno(aluno);
+
+        String[] params = {aluno.getId().toString()};
+
+        db.update("Alunos", dados, "id = ?", params);
+
     }
 }
